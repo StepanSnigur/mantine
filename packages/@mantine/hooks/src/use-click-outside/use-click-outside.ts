@@ -8,7 +8,8 @@ export function useClickOutside<T extends HTMLElement = any>(
   callback: (event: EventType) => void,
   events?: string[] | null,
   nodes?: (HTMLElement | null)[],
-  enabled: boolean = true
+  enabled: boolean = true,
+  useCapture: boolean = false
 ) {
   const ref = useRef<T>(null);
   const eventsList = events || DEFAULT_EVENTS;
@@ -40,12 +41,12 @@ export function useClickOutside<T extends HTMLElement = any>(
     }
 
     const events = eventsKey.split(',');
-    events.forEach((fn) => document.addEventListener(fn, listener));
+    events.forEach((fn) => document.addEventListener(fn, listener, useCapture));
 
     return () => {
-      events.forEach((fn) => document.removeEventListener(fn, listener));
+      events.forEach((fn) => document.removeEventListener(fn, listener, useCapture));
     };
-  }, [eventsKey, enabled]);
+  }, [eventsKey, enabled, useCapture]);
 
   return ref;
 }
